@@ -2,6 +2,7 @@ import glob
 import os
 import re
 import sys
+import tomllib
 
 import pytest
 
@@ -412,3 +413,27 @@ def test_trim_domain_email(cookies, context):
 
     base_settings = result.project_path / "config" / "settings" / "base.py"
     assert '"me@example.com"' in base_settings.read_text()
+
+
+def test_pyproject_toml(cookies, context):
+    author_name = "Project Author"
+    author_email = "me@example.com"
+    context.update(
+        {
+            "description": "DESCRIPTION",
+            "domain_name": "example.com",
+            "email": author_email,
+            "author_name": author_name,
+        }
+    )
+    result = cookies.bake(extra_context=context)
+    assert result.exit_code == 0
+
+    pyproject_toml = result.project_path / "pyproject.toml"
+
+    data = tomllib.loads(pyproject_toml.read_text())
+
+    assert data
+    assert data["project"]["authors"][0]["email"] == author_email
+    assert data["project"]["authors"][0]["name"] == author_name
+    assert data["project"]["name"] == context["project_slug"]

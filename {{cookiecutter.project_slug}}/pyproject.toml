@@ -141,8 +141,8 @@ extend-unsafe-fixes = [
 [tool.ruff.lint.isort]
 force-single-line = true
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
   "Werkzeug[watchdog]==3.0.6", # https://github.com/pallets/werkzeug
   "ipdb==0.13.13", # https://github.com/gotcha/ipdb
   {%- if cookiecutter.use_docker == 'y' %}
@@ -182,14 +182,14 @@ dev-dependencies = [
 ]
 
 [project]
-name = "cookiecutter-django"
-version = "2024.10.04"
-description = "A Cookiecutter template for creating production-ready Django projects quickly."
+name = "{{ cookiecutter.project_slug }}"
+version = "{{ cookiecutter.version }}"
+description = "{{ cookiecutter.description }}"
 readme = "README.md"
 
-license = { text = "BSD" }
+license = { text = "{{ cookiecutter.open_source_license }}" }
 authors = [
-  { name = "Daniel Roy Greenfeld", email = "pydanny@gmail.com" },
+  { name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.email }}" },
 ]
 requires-python = "==3.12.*"
 dependencies = [
