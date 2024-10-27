@@ -437,3 +437,15 @@ def test_pyproject_toml(cookies, context):
     assert data["project"]["authors"][0]["email"] == author_email
     assert data["project"]["authors"][0]["name"] == author_name
     assert data["project"]["name"] == context["project_slug"]
+
+
+def test_pre_commit_without_heroku(cookies, context):
+    context.update({"use_heroku": "n"})
+    result = cookies.bake(extra_context=context)
+    assert result.exit_code == 0
+
+    pre_commit_config = result.project_path / ".pre-commit-config.yaml"
+
+    data = pre_commit_config.read_text()
+
+    assert "uv-pre-commit" not in data
