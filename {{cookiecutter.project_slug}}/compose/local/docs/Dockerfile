@@ -1,6 +1,10 @@
 # Python build stage
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS python-build-stage
 
+ARG APP_HOME=/app
+
+WORKDIR ${APP_HOME}
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential \
@@ -10,14 +14,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
 # Requirements are installed here to ensure they will be cached.
 RUN --mount=type=cache,target=/root/.cache/uv \
 #    --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --no-install-project
-ADD . /app
+
+COPY . ${APP_HOME}
+
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync
 

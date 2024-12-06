@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock:rw \
     uv sync --no-install-project
 
-ADD . ${APP_HOME}
+COPY . ${APP_HOME}
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync

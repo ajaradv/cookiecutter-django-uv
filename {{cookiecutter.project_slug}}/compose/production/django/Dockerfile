@@ -6,7 +6,7 @@ WORKDIR ${APP_HOME}
 
 COPY ./package.json ${APP_HOME}
 RUN npm install && npm cache clean --force
-ADD . ${APP_HOME}
+COPY . ${APP_HOME}
 {%- if cookiecutter.frontend_pipeline == 'Webpack' and cookiecutter.use_whitenoise == 'n' %}
 {%- if cookiecutter.cloud_provider == 'AWS' %}
 ARG DJANGO_AWS_STORAGE_BUCKET_NAME
@@ -47,7 +47,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 {%- if cookiecutter.frontend_pipeline in ['Gulp', 'Webpack'] %}
 COPY --from=client-builder ${APP_HOME} ${APP_HOME}
 {% else %}
-ADD . ${APP_HOME}
+COPY . ${APP_HOME}
 {%- endif %}
 
 RUN --mount=type=cache,target=/root/.cache/uv \
